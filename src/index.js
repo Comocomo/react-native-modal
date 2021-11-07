@@ -28,6 +28,17 @@ const makeAnimation = (name, obj) => {
   registerAnimation(name, createAnimation(obj));
 };
 
+const getIphoneDimensions = () => {
+  let dimensions = Dimensions.get('window');
+  if (dimensions.width < 1 && dimensions.height < 1) {
+    dimensions = Dimensions.get('screen');
+  }
+  let width = dimensions.width < dimensions.height ? dimensions.width : dimensions.height;
+  let height = dimensions.width < dimensions.height ? dimensions.height : dimensions.width;
+
+  return { width: width, height: height };
+}
+
 const isObject = obj => {
   return obj !== null && typeof obj === "object";
 };
@@ -101,8 +112,8 @@ class ReactNativeModal extends Component {
   state = {
     showContent: true,
     isVisible: false,
-    deviceWidth: Dimensions.get("window").width,
-    deviceHeight: Dimensions.get("window").height,
+    deviceWidth: getIphoneDimensions().width,
+    deviceHeight: getIphoneDimensions().height,
     isSwipeable: this.props.swipeDirection ? true : false,
     pan: null
   };
@@ -302,11 +313,12 @@ class ReactNativeModal extends Component {
 
   handleDimensionsUpdate = dimensionsUpdate => {
     // Here we update the device dimensions in the state if the layout changed (triggering a render)
-    const deviceWidth = Dimensions.get("window").width;
-    const deviceHeight = Dimensions.get("window").height;
+    let dimen = getIphoneDimensions()
+    const deviceWidth = dimen.width;
+    const deviceHeight = dimen.height;
     if (
-      deviceWidth !== this.state.deviceWidth ||
-      deviceHeight !== this.state.deviceHeight
+        deviceWidth !== this.state.deviceWidth ||
+        deviceHeight !== this.state.deviceHeight
     ) {
       this.setState({ deviceWidth, deviceHeight });
     }
